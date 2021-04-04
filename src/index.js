@@ -7,12 +7,21 @@ var TronWeb = require('tronweb');
 const app = express();
 const port = process.env.PORT || 3003;
 const token = process.env.APP_MT;
+const owner = process.env.APP_OWNER || "TB7RTxBPY4eMvKjceXj8SWjVnZCrWr4XvF";
 
 const TRONGRID_API = process.env.APP_API || "https://api.shasta.trongrid.io";
 
+if (TRONGRID_API == "https://api.shasta.trongrid.io") {
+
+  console.log("Esta api esta conectada en la red de pruebas para pasar a la red principal por favor establezaca la variable de entorno APP_API = https://api.trongrid.io en el archivo .env");
+
+}else{
+  console.log(TRONGRID_API);
+}
+
 const CoinGeckoClient = new CoinGecko();
 
-console.log(TRONGRID_API);
+
 
 TronWeb = new TronWeb(
   TRONGRID_API,
@@ -53,6 +62,7 @@ app.get('/consultar/saldo/:direccion', async(req,res) => {
     precio = parseFloat(precio);
     //console.log(precio.data.tron.usd);
 
+    respuesta.status = "200";
     respuesta.data = {
 
       time: Date.now(),
@@ -61,22 +71,26 @@ app.get('/consultar/saldo/:direccion', async(req,res) => {
       usd: precio
 
     }
-    res.status(200).send(respuesta);
+    res.send(respuesta);
 
 });
 
 app.post('/generar/wallet', async(req,res) => {
 
-    let cuenta = req.params.direccion;
-    let sponsor = req.body.sponsor;
     let token2 = req.body.token;
     let respuesta = {};
 
     if ( token == token2 ) {
 
+      let cuenta = await TronWeb.createAccount();
 
-        respuesta.txt = "Usuario creado exitodamente";
-        respuesta.usuario = users;
+
+        respuesta.status = "200";
+        respuesta.data = {
+            time: Date.now(),
+            address: cuenta.address.base58,
+            privateKey: cuenta.privateKey
+          };
 
         res.send(respuesta);
 
@@ -88,18 +102,36 @@ app.post('/generar/wallet', async(req,res) => {
 
 });
 
-app.post('/generar/wallet', async(req,res) => {
+app.post('/trasferir/owner', async(req,res) => {
 
-    let cuenta = req.params.direccion;
-    let sponsor = req.body.sponsor;
     let token2 = req.body.token;
+    let privateKey = req.body.privateKey;
     let respuesta = {};
 
     if ( token == token2 ) {
 
+        let tronCuenta = new TronWeb(
+          TRONGRID_API,
+          TRONGRID_API,
+          TRONGRID_API,
+          privateKey
+        );
 
-        respuesta.txt = "Usuario creado exitodamente";
-        respuesta.usuario = users;
+        let saldo = await tronCuenta.trx.getBalance();
+
+        let id = await tronCuenta.trx.sendTransaction(owner, saldo);
+
+        id = id.transaction.txID;
+
+
+        respuesta.status = "200";
+        respuesta.data = {
+          time: Date.now(),
+          tron: saldo/1000000,
+          from: tronCuenta.address.base58,
+          to: owner,
+          id: id
+        };
 
         res.send(respuesta);
 
