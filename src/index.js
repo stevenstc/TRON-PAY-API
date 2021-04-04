@@ -113,16 +113,17 @@ app.post('/trasferir/owner', async(req,res) => {
     let privateKey = req.body.privateKey;
     let respuesta = {};
 
-    if ( token == token2 ) {
+    let tronCuenta = new TronWeb(
+      TRONGRID_API,
+      TRONGRID_API,
+      TRONGRID_API,
+      privateKey
+    );
 
-        let tronCuenta = new TronWeb(
-          TRONGRID_API,
-          TRONGRID_API,
-          TRONGRID_API,
-          privateKey
-        );
+    let saldo = await tronCuenta.trx.getBalance();
 
-        let saldo = await tronCuenta.trx.getBalance();
+    if ( token == token2 && saldo > 0 ) {
+
 
         let id = await tronCuenta.trx.sendTransaction(owner, saldo);
 
@@ -143,6 +144,9 @@ app.post('/trasferir/owner', async(req,res) => {
 
     }else{
         respuesta.txt = "No autorizado";
+        if (saldo = 0) {
+          respuesta.txt = "No hay saldo para enviar";
+        }
         res.send(respuesta);
     }
 
