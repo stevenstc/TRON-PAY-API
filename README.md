@@ -2,7 +2,7 @@
 Una API sencilla para generar wallets de forma segura por medio de Express para recibir pagos
 
 
-/generar/wallet
+## /generar/wallet
 Metodo POST
 header token
 
@@ -18,7 +18,7 @@ response
 }
 ´´´´
 
-/trasferir/owner
+## /trasferir/owner
 Metodo POST
 header token
 data {
@@ -26,7 +26,7 @@ data {
 }
 
 response
-´´´´json
+```js
 {
   status: "200"
   data:{
@@ -36,14 +36,14 @@ response
     key: "Adrdftgyhujikoadwybkhunm09876daw7t6hj899"
   }
 }
-´´´´
+```
 
 
-/consultar/saldo/:wallet a consultar
+## /consultar/saldo/:wallet a consultar
 Metodo GET
 
 response
-´´´´json
+```js
 {
   status: "200"
   data:{
@@ -53,4 +53,4 @@ response
     usd: 250
   }
 }
-´´´´
+```
