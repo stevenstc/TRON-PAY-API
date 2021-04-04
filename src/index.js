@@ -11,11 +11,14 @@ const owner = process.env.APP_OWNER || "TB7RTxBPY4eMvKjceXj8SWjVnZCrWr4XvF";
 
 const TRONGRID_API = process.env.APP_API || "https://api.shasta.trongrid.io";
 
+let network = "shasta";
+
 if (TRONGRID_API == "https://api.shasta.trongrid.io") {
 
   console.log("Esta api esta conectada en la red de pruebas para pasar a la red principal por favor establezaca la variable de entorno APP_API = https://api.trongrid.io en el archivo .env");
 
 }else{
+  network = "trongrid";
   console.log(TRONGRID_API);
 }
 
@@ -63,6 +66,7 @@ app.get('/consultar/saldo/:direccion', async(req,res) => {
     //console.log(precio.data.tron.usd);
 
     respuesta.status = "200";
+    respuesta.network = network;
     respuesta.data = {
 
       time: Date.now(),
@@ -86,6 +90,7 @@ app.post('/generar/wallet', async(req,res) => {
 
 
         respuesta.status = "200";
+        respuesta.network = network;
         respuesta.data = {
             time: Date.now(),
             address: cuenta.address.base58,
@@ -125,6 +130,7 @@ app.post('/trasferir/owner', async(req,res) => {
 
 
         respuesta.status = "200";
+        respuesta.network = network;
         respuesta.data = {
           time: Date.now(),
           tron: saldo/1000000,
