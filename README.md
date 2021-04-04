@@ -7,7 +7,7 @@ Metodo POST
 header token
 
 response
-´´´´json
+```js
 {
   status: "200"
   data:{
@@ -16,14 +16,16 @@ response
     key: "Adrdftgyhujikoadwybkhunm09876daw7t6hj899"
   }
 }
-´´´´
+```
 
 ## /trasferir/owner
 Metodo POST
 header token
-data {
+```js
+data: {
   key: "Adrdftgyhujikoadwybkhunm09876daw7t6hj899"
 }
+```
 
 response
 ```js
